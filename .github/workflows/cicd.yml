@@ -4,6 +4,9 @@ on: [push]
 jobs:
   selenium-tests:
     runs-on: ubuntu-latest
+    env:
+      CORRECT_PASSWORD: ${{ secrets.CORRECT_PASSWORD }}
+      INVALID_PASSWORD: ${{ secrets.INVALID_PASSWORD }}
 
 
     steps:
