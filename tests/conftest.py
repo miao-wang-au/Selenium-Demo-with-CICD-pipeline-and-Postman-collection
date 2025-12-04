@@ -14,7 +14,7 @@ def pytest_addoption(parser):
     )
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def driver(request):
     browser = request.config.getoption("--browser")
     print(f"\nSetting up: {browser} driver")
