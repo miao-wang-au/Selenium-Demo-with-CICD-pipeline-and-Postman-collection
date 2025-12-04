@@ -1,34 +1,48 @@
 name: selenium_demo
 on: [push]
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        browser: [ chrome, firefox ]
+
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Python 3.14
-        uses: actions/setup-python@v3
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
         with:
-          python-version: "3.14"
+          python-version: "3.10"
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          
 
-      - uses: actions/checkout@v3
-        if: success() || failure()
-      - run: |
-          cd tests
-          mkdir -p reports
-          pytest test_login.py --browser=chrome --html=reports/reports.html
-          chmod 777  /home/runner/work/python-se/python-se/tests/reports/
+      # Install browsers if needed
+      - name: Install browsers
+        run: |
+          if [ "${{matrix.browser}}" = "firefox" ]; then
+            sudo apt-get update
+            sudo apt-get install -y firefox-esr
+          fi
+          
 
-      - name: Set output
-        if: success() || failure()
-        id: results
-        run: echo "artifactPath=tests/reports/" >> $GITHUB_OUTPUT
+      #Run tests
+      - name: Run Selenium tests
+        run: |
+          mkdir -p tests/reports
+          pytest tests/test_login.py \
+            --browser=${{ matrix.browser }} \
+            --html=tests/reports/${{ matrix.browser }}-report.html
 
-      - uses: actions/upload-artifact@v4
-        if: success() || failure()
+      # Upload test report as artifact
+      - name: Upload test report
+        uses: actions/upload-artifact@v4
         with:
-          name: test-report
-          path: ${{ steps.results.outputs.artifactPath }}
+          name: test-report-${{ matrix.browser }}
+          path: tests/reports/${{ matrix.browser }}-report.html
