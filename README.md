@@ -59,7 +59,12 @@ jobs:
           name: test-report
           path: tests/reports/
 ```
-### Results from the automation scripts running over new changes
+#### Saving sample website login passwords as GitHub repository secrets
+
+<img width="795" height="245" alt="Screenshot 2025-12-05 102147" src="https://github.com/user-attachments/assets/d10792a5-61d3-4722-8e3b-c1643b89cb26" />
+
+
+### Results from the automation scripts running after code change
 
 <img width="1309" height="817" alt="Screenshot 2025-12-05 100150" src="https://github.com/user-attachments/assets/7e993bbb-d429-47db-86db-88d2ba45b04c" />
 
