@@ -85,7 +85,7 @@ jobs:
 [automation-report-chrome.html](https://github.com/user-attachments/files/23957166/automation-report-chrome.html)
 
 
-### Results from running the Postman collection test scripts
+## Results from running the Postman collection test scripts
 
 <img width="1496" height="920" alt="image" src="https://github.com/user-attachments/assets/8df4833a-e82d-4314-8d48-86b3104ceb21" />
 
