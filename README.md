@@ -1,10 +1,11 @@
-# Selenium Python demo with CI/CD pipeline
+# Selenium Python demo with CI/CD pipeline and Postman collection
 
-This demo I created contains 3 parts: 
+This demo I created contains 4 parts: 
 
 1. First project: Automation scripts within the folder 'SISK selenium python demo' to showcase the test automation for generating replenishment orders and running tests on a medical supply warehouse website.
 2. Second project: Automation scripts within the 'tests' folder to show case the 3 test cases covering 3 scenarios regarding the login functions on a sample website, which will be executed automatically as part of the CI/CD pipeline whenever there is new code/changes been pushed to the repository.
 3. The actual CI/CD pipeline configurations and the workflow yml file located in '.github -> workflow' folder regarding the second project.
+4. The JSON file 'Postman demo Client API.postman_collection.json' located under 'tests' folder contains the Postman collection demo with 60 post-response test scripts examples written in JavaScript, which is compatible for test automation with Newman in the CICD workflow.
 
 
 ## Automation scripts for SISK Warehouse
