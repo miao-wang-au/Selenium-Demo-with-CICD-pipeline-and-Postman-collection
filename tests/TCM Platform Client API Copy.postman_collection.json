@@ -1,0 +1,2051 @@
+{
+  "info": {
+    "_postman_id": "bee72783-dc47-41d1-adb1-cc91972fdbc3",
+    "name": "Demo Client API Copy",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "18150438"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Obtain OAuth2 access token (Happy Path)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "//Save access token to environment variable\r",
+                  "pm.environment.set(\"access_token\", res.access_token);\r",
+                  "\r",
+                  "pm.test(\"Status code returns 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"The response message is as expected\", function () {\r",
+                  "    pm.expect(res).to.have.property(\"access_token\");\r",
+                  "    pm.expect(res).to.have.property(\"token_type\");\r",
+                  "    pm.expect(res).to.have.property(\"expires_in\");\r",
+                  "});\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"grant_type\": \"client_credentials\",\r\n  \"client_id\": \"{{vault:client_id_{{env}}}}\",\r\n  \"client_secret\": \"{{vault:client_secret_{{env}}}}\",\r\n  \"audience\": \"https://b2b-network-xxx.xxx.com/api\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/oauth/token",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "oauth",
+                "token"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtain OAuth2 token with invalid input",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Status code returns 500\", function () {\r",
+                  "    pm.response.to.have.status(500);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"The response messages are as expected\", function () {\r",
+                  "    pm.expect(res.error.message).to.equal(\"status code: 500, reason phrase: Internal Server Error\");\r",
+                  "\r",
+                  "    pm.expect(res.details.additionalErrorMessage).to.equal(\"Could not resolve [client_id] as metadata/uniqueId/size/payload\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"invalid\": 123\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/oauth/token",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "oauth",
+                "token"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtain OAuth2 token with invalid id and secret",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Status code returns 401\", function () {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"The response message is as expected\", function () {\r",
+                  "    pm.expect(res).to.have.property(\"error\");\r",
+                  "    pm.expect(res.error).to.have.property(\"message\");\r",
+                  "\r",
+                  "    pm.expect(res.error.message).to.equal(\"status code: 401, reason phrase: Unauthorized\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"grant_type\": \"client_credentials\",\r\n  \"client_id\": \"\",\r\n  \"client_secret\": \"\",\r\n  \"audience\": \"https://b2b-network-xxx.xxx.com/api\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/oauth/token",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "oauth",
+                "token"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtain OAuth2 access token when a token already exists",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Status code returns 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"The response message is as expected\", function () {\r",
+                  "    pm.expect(res).to.have.property(\"access_token\");\r",
+                  "    pm.expect(res).to.have.property(\"token_type\");\r",
+                  "    pm.expect(res).to.have.property(\"expires_in\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"grant_type\": \"client_credentials\",\r\n  \"client_id\": \"{{vault:client_id_{{env}}}}\",\r\n  \"client_secret\": \"{{vault:client_secret_{{env}}}}\",\r\n  \"audience\": \"https://b2b-network-xxx.xxx/api\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/oauth/token",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "oauth",
+                "token"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "auth": {
+        "type": "noauth"
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Connections",
+      "item": [
+        {
+          "name": "Redeem pairing ID to create an authorised connection (Happy Path)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "",
+                  "",
+                  "pm.test(\"Status code returns 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"The response contains connections\", function () {",
+                  "    pm.expect(res).to.have.property(\"connections\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pairingId\": 4567\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/connections/redeem",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "connections",
+                "redeem"
+              ]
+            },
+            "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+          },
+          "response": []
+        },
+        {
+          "name": "Redeem pairing ID without a valid token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "",
+                  "",
+                  "pm.test(\"Status code returns 401\", function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "",
+                  "pm.test(\"The response messages are as expected\", function () {",
+                  "    pm.expect(res.error.message).to.equal(\"status code: 401, reason phrase: Unauthorized\");",
+                  "",
+                  "    pm.expect(res.details.additionalErrorMessage).to.equal(\"Authorization header null or empty.\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pairingId\": 4567\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/connections/redeem",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "connections",
+                "redeem"
+              ]
+            },
+            "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+          },
+          "response": []
+        },
+        {
+          "name": "Redeem pairing ID with invalid input",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "",
+                  "",
+                  "pm.test(\"Status code returns 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"The response messages are as expected\", function () {",
+                  "    pm.expect(res.error.message).to.equal(\"status code: 400, reason phrase: Bad Request\");",
+                  "",
+                  "    pm.expect(res.details.additionalErrorMessage).to.equal(\"No results for path: $['pairingId']\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invalid\": \"123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/connections/redeem",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "connections",
+                "redeem"
+              ]
+            },
+            "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+          },
+          "response": []
+        },
+        {
+          "name": "Redeem pairing ID with an invalid pairing ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "",
+                  "",
+                  "pm.test(\"Status code returns 404\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test(\"The response messages are as expected\", function () {",
+                  "    pm.expect(res.error.message).to.equal(\"status code: 404, reason phrase: Not Found\");",
+                  "",
+                  "    pm.expect(res.details.additionalErrorMessage).to.match(/^Resource with ID \\[.*\\] not found$/);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pairingId\": 1A2F34\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/connections/redeem",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "connections",
+                "redeem"
+              ]
+            },
+            "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+          },
+          "response": []
+        },
+        {
+          "name": "Get authorised accounts and businesses for a connection (Happy path)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Status code returns 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"The response contains connections\", function () {\r",
+                  "    pm.expect(res).to.have.property(\"connections\");\r",
+                  "    pm.expect(res).to.have.property(\"meta\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/connections/connection/:connectionId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "connections",
+                "connection",
+                ":connectionId"
+              ],
+              "variable": [
+                {
+                  "key": "connectionId",
+                  "value": "1024"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get authorised accounts and businesses for a connection without a valid token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Status code returns 401\", function () {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"The response messages are as expected\", function () {\r",
+                  "    pm.expect(res.error.message).to.equal(\"status code: 401, reason phrase: Unauthorized\");\r",
+                  "\r",
+                  "    pm.expect(res.details.additionalErrorMessage).to.equal(\"Authorization header null or empty.\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/connections/connection/:connectionId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "connections",
+                "connection",
+                ":connectionId"
+              ],
+              "variable": [
+                {
+                  "key": "connectionId",
+                  "value": "1024"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get authorised accounts and businesses for a connection with invalid connection ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Status code returns 404\", function () {\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"The response messages are as expected\", function () {\r",
+                  "    pm.expect(res.error.message).to.equal(\"status code: 404, reason phrase: Not Found\");\r",
+                  "\r",
+                  "    pm.expect(res.details.additionalErrorMessage).to.match(/^Resource with ID \\[.*\\] not found$/);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/connections/connection/:connectionId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "connections",
+                "connection",
+                ":connectionId"
+              ],
+              "variable": [
+                {
+                  "key": "connectionId",
+                  "value": "1234X"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get all authorised accounts and businesses for all connections (Happy Path)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Status code returns 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"The response contains connections\", function () {\r",
+                  "    pm.expect(res).to.have.property(\"connections\");\r",
+                  "    pm.expect(res).to.have.property(\"meta\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/connections?since=2025-10-01T00:00:00Z&limit=200&cursor=1024",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "connections"
+              ],
+              "query": [
+                {
+                  "key": "since",
+                  "value": "2025-10-01T00:00:00Z"
+                },
+                {
+                  "key": "limit",
+                  "value": "200"
+                },
+                {
+                  "key": "cursor",
+                  "value": "1024"
+                }
+              ]
+            },
+            "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+          },
+          "response": []
+        },
+        {
+          "name": "Get all authorised accounts and businesses for all connections without a valid token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Status code returns 401\", function () {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"The response messages are as expected\", function () {\r",
+                  "    pm.expect(res.error.message).to.equal(\"status code: 401, reason phrase: Unauthorized\");\r",
+                  "\r",
+                  "    pm.expect(res.details.additionalErrorMessage).to.equal(\"Authorization header null or empty.\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/connections?since=2025-10-01T00:00:00Z&limit=200&cursor=1024",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "connections"
+              ],
+              "query": [
+                {
+                  "key": "since",
+                  "value": "2025-10-01T00:00:00Z"
+                },
+                {
+                  "key": "limit",
+                  "value": "200"
+                },
+                {
+                  "key": "cursor",
+                  "value": "1024"
+                }
+              ]
+            },
+            "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Crop & Field Data",
+      "item": [
+        {
+          "name": "Submit crop & field data for an account (Happy Path)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Status code returns 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"The response body is as expected\", function () {\r",
+                  "    pm.expect(res).to.have.property(\"accepted\");\r",
+                  "    pm.expect(res).to.have.property(\"meta\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"data\": [\r\n    {\r\n      \"accountId\": 123,\r\n      \"expectedVersion\": 3,\r\n      \"payload\": {\r\n        \"businesses\": [\r\n          {\r\n            \"id\": 1,\r\n            \"name\": \"Example Farms Ltd.\",\r\n            \"holdings\": []\r\n          }\r\n        ]\r\n      }\r\n    }\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/data/crop-field",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "data",
+                "crop-field"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Submit crop & field data for an account without a valid token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Status code returns 401\", function () {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"The response messages are as expected\", function () {\r",
+                  "    pm.expect(res.error.message).to.equal(\"status code: 401, reason phrase: Unauthorized\");\r",
+                  "\r",
+                  "    pm.expect(res.details.additionalErrorMessage).to.equal(\"Authorization header null or empty.\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"data\": [\r\n    {\r\n      \"accountId\": 123,\r\n      \"expectedVersion\": 3,\r\n      \"payload\": {\r\n        \"businesses\": [\r\n          {\r\n            \"id\": 1,\r\n            \"name\": \"Example Farms Ltd.\",\r\n            \"holdings\": []\r\n          }\r\n        ]\r\n      }\r\n    }\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/data/crop-field",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "data",
+                "crop-field"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Submit crop & field data for an account with invalid input",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Status code returns 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"The response messages are as expected\", function () {\r",
+                  "    pm.expect(res.error.message).to.equal(\"status code: 400, reason phrase: Bad Request\");\r",
+                  "\r",
+                  "    pm.expect(res.details.additionalErrorMessage).to.equal(\"Missing property in path $['data']\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"invalid\": 123\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/data/crop-field",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "data",
+                "crop-field"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Submit crop & field data for an account with expected version conflict",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Status code returns 409\", function () {\r",
+                  "    pm.response.to.have.status(409);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"The response messages are as expected\", function () {\r",
+                  "    pm.expect(res.error.message).to.equal(\"status code: 409, reason phrase: Conflict\");\r",
+                  "\r",
+                  "    pm.expect(res.details.additionalErrorMessage).to.match(/^Conflict: current version is \\d+, not \\d+ as expected\\. Please sync and retry\\.$/);\r",
+                  "\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"data\": [\r\n    {\r\n      \"accountId\": 123,\r\n      \"expectedVersion\": 3,\r\n      \"payload\": {\r\n        \"businesses\": [\r\n          {\r\n            \"id\": 1,\r\n            \"name\": \"Example Farms Ltd.\",\r\n            \"holdings\": []\r\n          }\r\n        ]\r\n      }\r\n    }\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/data/crop-field",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "data",
+                "crop-field"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Retrieve crop & field data for all accounts (all versions) (Happy Path)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Status code returns 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"The response body is as expected\", function () {\r",
+                  "    pm.expect(res).to.have.property(\"data\");\r",
+                  "    pm.expect(res).to.have.property(\"meta\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{base_url}}/data/crop-field?since=2025-10-01T00:00:00Z&limit=200&cursor=1024",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "data",
+                "crop-field"
+              ],
+              "query": [
+                {
+                  "key": "since",
+                  "value": "2025-10-01T00:00:00Z"
+                },
+                {
+                  "key": "limit",
+                  "value": "200"
+                },
+                {
+                  "key": "cursor",
+                  "value": "1024"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Retrieve crop & field data for all accounts (all versions) without a valid token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Status code returns 401\", function () {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"The response messages are as expected\", function () {\r",
+                  "    pm.expect(res.error.message).to.equal(\"status code: 401, reason phrase: Unauthorized\");\r",
+                  "\r",
+                  "    pm.expect(res.details.additionalErrorMessage).to.equal(\"Authorization header null or empty.\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{base_url}}/data/crop-field?since=2025-10-01T00:00:00Z&limit=200&cursor=1024",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "data",
+                "crop-field"
+              ],
+              "query": [
+                {
+                  "key": "since",
+                  "value": "2025-10-01T00:00:00Z"
+                },
+                {
+                  "key": "limit",
+                  "value": "200"
+                },
+                {
+                  "key": "cursor",
+                  "value": "1024"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Retrieve crop & field data for an account (all versions) (Happy Path)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Status code returns 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"The response body is as expected\", function () {\r",
+                  "    pm.expect(res).to.have.property(\"data\");\r",
+                  "    pm.expect(res).to.have.property(\"meta\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/data/crop-field/account/:accountId?since=2025-10-01T00%3A00%3A00Z&limit=200&cursor=1024",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "data",
+                "crop-field",
+                "account",
+                ":accountId"
+              ],
+              "query": [
+                {
+                  "key": "since",
+                  "value": "2025-10-01T00%3A00%3A00Z"
+                },
+                {
+                  "key": "limit",
+                  "value": "200"
+                },
+                {
+                  "key": "cursor",
+                  "value": "1024"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "accountId",
+                  "value": "123"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Retrieve crop & field data for an account (all versions) with invalid account ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Status code returns 404\", function () {\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"The response messages are as expected\", function () {\r",
+                  "    pm.expect(res.error.message).to.equal(\"status code: 404, reason phrase: Not Found\");\r",
+                  "\r",
+                  "    pm.expect(res.details.additionalErrorMessage).to.match(/^Resource with ID \\[.*\\] not found$/);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/data/crop-field/account/:accountId?since=2025-10-01T00%3A00%3A00Z&limit=200&cursor=1024",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "data",
+                "crop-field",
+                "account",
+                ":accountId"
+              ],
+              "query": [
+                {
+                  "key": "since",
+                  "value": "2025-10-01T00%3A00%3A00Z"
+                },
+                {
+                  "key": "limit",
+                  "value": "200"
+                },
+                {
+                  "key": "cursor",
+                  "value": "1024"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "accountId",
+                  "value": "9999"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Retrieve crop & field data for an account (all versions) without a valid token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Status code returns 401\", function () {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"The response messages are as expected\", function () {\r",
+                  "    pm.expect(res.error.message).to.equal(\"status code: 401, reason phrase: Unauthorized\");\r",
+                  "\r",
+                  "    pm.expect(res.details.additionalErrorMessage).to.equal(\"Authorization header null or empty.\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/data/crop-field/account/:accountId?since=2025-10-01T00%3A00%3A00Z&limit=200&cursor=1024",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "data",
+                "crop-field",
+                "account",
+                ":accountId"
+              ],
+              "query": [
+                {
+                  "key": "since",
+                  "value": "2025-10-01T00%3A00%3A00Z"
+                },
+                {
+                  "key": "limit",
+                  "value": "200"
+                },
+                {
+                  "key": "cursor",
+                  "value": "1024"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "accountId",
+                  "value": "123"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Retrieve current state only of crop & field data for all accounts (based on last known version) (Happy Path)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Status code returns 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"The response body is as expected\", function () {\r",
+                  "    pm.expect(res).to.have.property(\"data\");\r",
+                  "    pm.expect(res).to.have.property(\"meta\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/data/crop-field/snapshot?since=2025-10-01T00%3A00%3A00Z&limit=200&cursor=1024",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "data",
+                "crop-field",
+                "snapshot"
+              ],
+              "query": [
+                {
+                  "key": "since",
+                  "value": "2025-10-01T00%3A00%3A00Z"
+                },
+                {
+                  "key": "limit",
+                  "value": "200"
+                },
+                {
+                  "key": "cursor",
+                  "value": "1024"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Retrieve current state only of crop & field data for all accounts (based on last known version) without a valid token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Status code returns 401\", function () {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"The response messages are as expected\", function () {\r",
+                  "    pm.expect(res.error.message).to.equal(\"status code: 401, reason phrase: Unauthorized\");\r",
+                  "\r",
+                  "    pm.expect(res.details.additionalErrorMessage).to.equal(\"Authorization header null or empty.\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/data/crop-field/snapshot?since=2025-10-01T00%3A00%3A00Z&limit=200&cursor=1024",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "data",
+                "crop-field",
+                "snapshot"
+              ],
+              "query": [
+                {
+                  "key": "since",
+                  "value": "2025-10-01T00%3A00%3A00Z"
+                },
+                {
+                  "key": "limit",
+                  "value": "200"
+                },
+                {
+                  "key": "cursor",
+                  "value": "1024"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Retrieve current state of crop & field data for an account (last known version) (Happy Path)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Status code returns 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"The response body is as expected\", function () {\r",
+                  "    pm.expect(res).to.have.property(\"data\");\r",
+                  "    pm.expect(res).to.have.property(\"meta\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/data/crop-field/snapshot/account/:accountId?since=2025-10-01T00%3A00%3A00Z&limit=200&cursor=1024",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "data",
+                "crop-field",
+                "snapshot",
+                "account",
+                ":accountId"
+              ],
+              "query": [
+                {
+                  "key": "since",
+                  "value": "2025-10-01T00%3A00%3A00Z"
+                },
+                {
+                  "key": "limit",
+                  "value": "200"
+                },
+                {
+                  "key": "cursor",
+                  "value": "1024"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "accountId",
+                  "value": "123"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Retrieve current state of crop & field data for an account (last known version) with invalid account ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Status code returns 404\", function () {\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"The response messages are as expected\", function () {\r",
+                  "    pm.expect(res.error.message).to.equal(\"status code: 404, reason phrase: Not Found\");\r",
+                  "\r",
+                  "    pm.expect(res.details.additionalErrorMessage).to.match(/^Resource with ID \\[.*\\] not found$/);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/data/crop-field/snapshot/account/:accountId?since=2025-10-01T00%3A00%3A00Z&limit=200&cursor=1024",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "data",
+                "crop-field",
+                "snapshot",
+                "account",
+                ":accountId"
+              ],
+              "query": [
+                {
+                  "key": "since",
+                  "value": "2025-10-01T00%3A00%3A00Z"
+                },
+                {
+                  "key": "limit",
+                  "value": "200"
+                },
+                {
+                  "key": "cursor",
+                  "value": "1024"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "accountId",
+                  "value": "9999"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Retrieve current state of crop & field data for an account (last known version) without a valid token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Status code returns 401\", function () {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"The response messages are as expected\", function () {\r",
+                  "    pm.expect(res.error.message).to.equal(\"status code: 401, reason phrase: Unauthorized\");\r",
+                  "\r",
+                  "    pm.expect(res.details.additionalErrorMessage).to.equal(\"Authorization header null or empty.\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/data/crop-field/snapshot/account/:accountId?since=2025-10-01T00%3A00%3A00Z&limit=200&cursor=1024",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "data",
+                "crop-field",
+                "snapshot",
+                "account",
+                ":accountId"
+              ],
+              "query": [
+                {
+                  "key": "since",
+                  "value": "2025-10-01T00%3A00%3A00Z"
+                },
+                {
+                  "key": "limit",
+                  "value": "200"
+                },
+                {
+                  "key": "cursor",
+                  "value": "1024"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "accountId",
+                  "value": "123"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Acknowledgement call to trigger a crop & field data purge for an account whilst retaining data for the latest version only (Happy Path)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Status code returns 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"The response body is as expected\", function () {\r",
+                  "    pm.expect(res).to.have.property(\"accepted\");\r",
+                  "    pm.expect(res).to.have.property(\"meta\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/data/crop-field/history/account/:accountId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "data",
+                "crop-field",
+                "history",
+                "account",
+                ":accountId"
+              ],
+              "variable": [
+                {
+                  "key": "accountId",
+                  "value": "123"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Acknowledgement call to trigger a crop & field data purge for an account whilst retaining data for the latest version only with invalid account ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Status code returns 404\", function () {\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"The response messages are as expected\", function () {\r",
+                  "    pm.expect(res.error.message).to.equal(\"status code: 404, reason phrase: Not Found\");\r",
+                  "\r",
+                  "    pm.expect(res.details.additionalErrorMessage).to.match(/^Resource with ID \\[.*\\] not found$/);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/data/crop-field/history/account/:accountId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "data",
+                "crop-field",
+                "history",
+                "account",
+                ":accountId"
+              ],
+              "variable": [
+                {
+                  "key": "accountId",
+                  "value": "9999"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Acknowledgement call to trigger a crop & field data purge for an account whilst retaining data for the latest version only without a valid token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Status code returns 401\", function () {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"The response messages are as expected\", function () {\r",
+                  "    pm.expect(res.error.message).to.equal(\"status code: 401, reason phrase: Unauthorized\");\r",
+                  "\r",
+                  "    pm.expect(res.details.additionalErrorMessage).to.equal(\"Authorization header null or empty.\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/data/crop-field/history/account/:accountId",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "data",
+                "crop-field",
+                "history",
+                "account",
+                ":accountId"
+              ],
+              "variable": [
+                {
+                  "key": "accountId",
+                  "value": "123"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{access_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "env",
+      "value": ""
+    },
+    {
+      "key": "access_token",
+      "value": ""
+    },
+    {
+      "key": "base_url",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}
